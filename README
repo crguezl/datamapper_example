@@ -1,0 +1,78 @@
+The example was taken from:
+
+      http://ruby.about.com/od/sinatra/a/sinatra7_2.htm
+
+http://datamapper.org/getting-started.html
+
+DataMapper is a "Object/Relational Mapper" or ORM. In other words,
+it maps Ruby objects to database records that makes with objects
+from a database a snap. If this sounds familiar then you may be
+thinking of ActiveRecord, the ORM library used in Ruby on Rails.
+If you're familiar with ActiveRecord already, picking up DataMapper
+will be quite easy.
+
+To begin using DataMapper, you must require 
+                    require 'data_mapper'
+connect to a database using the DataMapper.setup method. The setup
+method takes a string in URL format describing the database to open.
+Here, the "protocol" is the DataObject to use (in our case, sqlite3).
+The rest of the URL is the path to the database file. Note that
+this is the full path, not the relative path to the database file.
+
+    DataMapper.setup( :default, "sqlite3://#{Dir.pwd}/rolodex.db" )
+
+p.ej. 
+
+      DataMapper.setup( :default, "sqlite3://#{Dir.pwd}/rolodex.db" )
+
+Now that you're set up, you can jump right in and define some models.
+This is one area that DataMapper really differs from ActiveRecord.
+
+You don't define models in ActiveRecord, you simply define the class
+and it picks up the fields from the database. The only place you
+"define" models in ActiveRecord is in migrations. 
+
+HOWEVER, THIS MODEL YOU'RE DEFINING FOR DATAMAPPER IS BOTH THE MODEL
+DEFINITION AND THE MIGRATION.
+
+This sample model will store a database about people. 
+Fields are first name, last name and email. 
+
+Note that all models must have at least one key. 
+
+The key is used for fast searching and, among other
+things, must be unique. 
+
+If no suitable field exists for a key, add an id field of the type Serial. 
+
+It will automatically be a key, and will generate unique IDs for each row in the database.
+
+Also, after creating your models you can call 
+
+             DataMapper.auto_migrate!
+
+This is a simple migration method that will create any tables
+necessary and, if the table already exists, add or remove any columns
+needed. 
+
+This is quite destructive though, one wrong move and it
+could wipe out all of your data. 
+
+DataMapper does have more sophisticated
+migrations, but they're not covered in this article.
+
+Getting started with DataMapper
+
+
+  DataMapper.auto_upgrade!
+
+  This tries to make the schema match the model. It will CREATE new
+  tables, and add columns to existing tables. It won't change any
+  existing columns though (say, to add a NOT NULL constraint) and
+  it doesn't drop any columns. Both these commands also can be used
+  on an individual model (e.g. Post.auto_migrate!)
+
+Now that you have a database connection established and a model
+defined, you can start creating, reading, updating and destroying
+records from the database. The following shows a few examples of
+how to do a variety of actions with DataMapper.
