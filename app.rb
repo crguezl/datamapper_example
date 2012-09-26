@@ -3,7 +3,6 @@ require 'rubygems'
 require 'sinatra'
 require 'haml'
 require 'data_mapper'
-#require 'active_support/all' # to use slice
 
 # full path!
 DataMapper.setup( :default, "sqlite3://#{Dir.pwd}/agenda.db" )
@@ -56,14 +55,11 @@ post '/contacts/:id/update' do|id|
   puts "en /contacts/:id/update: params = #{params} id = #{id}"
   c = Contact.get(id)
   puts c.inspect
-  #puts "en /contacts/:id/update: params.slice = #{params.slice(:firstname, :lastname, :email)} id = #{id}"
-  #c.update_attributes params
+  
   puts "Fail while recording #{c}" unless c.update(
       :firstname => params[:firstname], 
       :lastname  => params[:lastname], 
       :email     => params[:email])
-  #c.attributes params.slice(:firstname, :lastname, :email, :id)
-  #c.save
 
   redirect "/contacts/#{id}"
 end
