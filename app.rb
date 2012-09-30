@@ -20,8 +20,10 @@ end
 DataMapper.auto_upgrade!
 
 # Show list of contacts
-get '/contacts/' do
-  haml :list, :locals => { :cs => Contact.all }
+%w{/ /contacts/?}.each do |r|
+  get r do
+    haml :list, :locals => { :cs => Contact.all }
+  end
 end
 
 # Show form to create new contact
@@ -50,6 +52,22 @@ get '/contacts/:id/edit' do|id|
   }
 end
 
+# Show form to find a contact by firstname
+get '/contacts/findform' do
+  haml :findform, :locals => {
+    :action => "/contacts/find"
+  }
+end
+
+post '/contacts/find' do
+  puts "params = #{params}"
+  s = params.select { |k,v| v != '' }
+  puts "selected #{s}"
+  cs = Contact.all(s)
+  puts cs
+  haml :list, :locals => { :cs => cs }
+end
+#
 # Edit a contact
 post '/contacts/:id/update' do|id|
   puts "en /contacts/:id/update: params = #{params} id = #{id}"
@@ -87,6 +105,7 @@ __END__
   %body
     = yield
     %a(href="/contacts/") Contact List
+    %a(href="/contacts/findform") Find Contact
 
 @@form
 %h1 Create a new contact
@@ -137,3 +156,23 @@ __END__
         %a(href="/contacts/#{c.id}") Show
       %td
         %a(href="/contacts/#{c.id}/edit") Edit
+
+@@findform
+%h1 Find a contact for firstname
+%form(action="#{action}" method="POST")
+  %label(for="firstname") First Name
+  %input(type="text" name="firstname" value="")
+  %br
+
+  %label(for="lastname") Last Name
+  %input(type="text" name="lastname" value="")
+  %br
+
+  %label(for="email") Email
+  %input(type="text" name="email" value="")
+  %br
+
+  %input(type="submit")
+  %input(type="reset")
+  %br
+
