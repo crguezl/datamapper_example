@@ -62,6 +62,8 @@ end
 post '/contacts/find' do
   puts "params = #{params}"
   s = params.select { |k,v| v != '' }
+  #s[:order] = [ :lastname.desc]
+  s[:order] = [ :lastname.asc]
   puts "selected #{s}"
   cs = Contact.all(s)
   puts cs
